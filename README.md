@@ -22,3 +22,14 @@ WhatsApp AI bot for small shops — inventory management, sales tracking, and au
 6. Add environment variables (see below)
 
 ### Environment Variables
+WHATSAPP_VERIFY_TOKEN=dexter-shop-ai-secret-2026
+WHATSAPP_ACCESS_TOKEN=<paste_token_in_render_only>
+WHATSAPP_PHONE_NUMBER_ID=1376418208868948
+
+
+## Test
+Send "hi" from your verified WhatsApp number to the test number.
+Watch Render logs. Expect an echo reply.
+
+## Built by
+Dexter (Okeke Chukwudubem)
