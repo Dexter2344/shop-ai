@@ -1,35 +1,82 @@
 # Shop-AI
 
-WhatsApp AI bot for small shops — inventory management, sales tracking, and automated customer service via Meta Cloud API + Gemini.
+A web-based AI inventory and sales assistant for small shops. Snap a photo of your stock, and the AI counts it. Log sales, get low-stock alerts, and track revenue — all from your phone browser.
 
-## Status
-- [x] Webhook verify
-- [x] Receive messages
-- [x] Echo replies
-- [ ] Gemini integration
-- [ ] Photo → inventory count
-- [ ] Sale deduction
-- [ ] Low stock alerts
-- [ ] Customer-facing bot
+Built as a test bench for the core features. WhatsApp integration will be layered on top once the logic is solid.
 
-## Deploy (Render)
+## Stack
 
-1. New → Web Service
-2. Connect GitHub repo `shop-ai`
-3. Runtime: Python 3
-4. Build Command: `pip install -r requirements.txt`
-5. Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-6. Add environment variables (see below)
+- **Backend:** FastAPI (Python) on Render
+- **Frontend:** Plain HTML/CSS/JS on Vercel
+- **AI:** Google Gemini (vision + text)
+- **Database:** Supabase (Postgres)
 
-### Environment Variables
-WHATSAPP_VERIFY_TOKEN=dexter-shop-ai-secret-2026
-WHATSAPP_ACCESS_TOKEN=<paste_token_in_render_only>
-WHATSAPP_PHONE_NUMBER_ID=1376418208868948
+## Features
+
+- [x] Photo → AI inventory count (Gemini Vision)
+- [x] Manual product add/edit/delete
+- [x] Sale logging with auto stock deduction
+- [x] Low-stock alerts (≤5 units)
+- [x] Stats dashboard (total products, stock, revenue)
+- [ ] Frontend web app (in progress)
+- [ ] WhatsApp integration (future)
+- [ ] Customer-facing bot (future)
+
+## Deploy (Backend — Render)
+
+### 1. Supabase Setup
+- Create a new project at [supabase.com](https://supabase.com)
+- Open **SQL Editor** and run the contents of `supabase_schema.sql`
+- Go to **Settings → API** and copy:
+  - `Project URL`
+  - `service_role` key (keep this secret)
+
+### 2. Gemini API Key
+- Go to [aistudio.google.com](https://aistudio.google.com)
+- Sign in → Get API key → copy
+
+### 3. Render Setup
+- New → Web Service
+- Connect GitHub repo `shop-ai`
+- Runtime: **Python 3**
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Instance Type: **Free**
+
+### 4. Environment Variables (Render)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key
+GEMINI_API_KEY=your_gemini_api_key
 
 
-## Test
-Send "hi" from your verified WhatsApp number to the test number.
-Watch Render logs. Expect an echo reply.
+## API Endpoints
 
-## Built by
-Dexter (Okeke Chukwudubem)
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/` | Health check |
+| GET | `/api/products` | List all products |
+| POST | `/api/product` | Create a product |
+| PATCH | `/api/product/{id}` | Update a product |
+| DELETE | `/api/product/{id}` | Delete a product |
+| POST | `/api/sale` | Record a sale (auto-deduct) |
+| GET | `/api/alerts` | Low-stock items (≤5) |
+| POST | `/api/scan` | Upload photo → AI counts products |
+| GET | `/api/stats` | Dashboard statistics |
+
+## Local Development
+
+```bash
+pip install -r requirements.txt
+# create .env with real values (copy from .env.example)
+uvicorn main:app --reload
+
+Repo Structure
+shop-ai/
+├── main.py                 # FastAPI backend
+├── requirements.txt        # Python deps
+├── supabase_schema.sql     # DB schema (run once in Supabase)
+├── .env.example            # Env var template
+├── .gitignore              # Blocks .env from commit
+└── README.md
+Built by
+Dexter (Okeke Chukwudubem) — Dexter Digital
